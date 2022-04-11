@@ -1,0 +1,5 @@
+build/bin
+frontend/node_modules
+frontend/dist
+frontend/.parcel-cache
+go.sum

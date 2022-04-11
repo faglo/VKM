@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Wails: Production vk-player-wails",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "program": "${workspaceFolder}/build/bin/vk-player-wails.exe",
+      "preLaunchTask": "build",
+      "cwd": "${workspaceFolder}",
+      "env": {}
+    },
+    {
+      "name": "Wails: Debug vk-player-wails",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "program": "${workspaceFolder}/build/bin/vk-player-wails.exe",
+      "preLaunchTask": "build debug",
+      "cwd": "${workspaceFolder}",
+      "env": {}
+    }
+  ]
+}

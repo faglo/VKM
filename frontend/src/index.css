@@ -1,0 +1,20 @@
+@font-face{
+  font-family:"VK Sans Display";
+  src:url(../public/fonts/vk-sans.woff2)
+  format("woff2"),url(../public/fonts/vk-sans.woff)
+  format("woff");
+  font-weight:500;
+  font-display:fallback
+}
+
+body {
+  margin: 0;
+  font-family: "VK Sans Display";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

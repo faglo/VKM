@@ -1,0 +1,49 @@
+{
+  "name": "vk-player",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/lab": "^5.0.0-alpha.76",
+    "@mui/material": "^5.6.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/user-event": "^13.5.0",
+    "@vkontakte/icons": "^1.150.0",
+    "@vkontakte/vkui": "^4.28.1",
+    "cross-env": "^7.0.3",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-redux": "^7.2.8",
+    "redux": "^4.1.2",
+    "rimraf": "^3.0.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "cross-env NODE_ENV=development parcel --no-cache ./public/index.html && rimraf dist",
+    "build": "cross-env NODE_ENV=production parcel build ./public/index.html --public-url /"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "not ios_saf < 13"
+    ],
+    "development": [
+      "last 1 chrome version"
+    ]
+  },
+  "devDependencies": {
+    "@parcel/packager-raw-url": "2.4.1",
+    "@parcel/transformer-webmanifest": "2.4.1",
+    "parcel": "^2.4.1"
+  }
+}
