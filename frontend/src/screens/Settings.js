@@ -1,35 +1,41 @@
 import React from "react";
-import { Box } from "@mui/system";
-import { Divider, List, ListItem, ListItemText } from "@mui/material";
+import { Grid, Button, Typography, Box } from "@mui/material";
+import { Icon28DoorArrowRightOutline } from '@vkontakte/icons';
+import { Icon28PollSquareOutline } from '@vkontakte/icons';
+import { Icon28PaintRollerOutline } from '@vkontakte/icons';
 
 function Settings(){
     const settings = [
         {
             name: "Logout",
             action: null,
+            icon: <Icon28DoorArrowRightOutline />
+        },
+        {
+            name: "Equalizer",
+            action: null,
+            icon: <Icon28PollSquareOutline />
+        },
+        {
+            name: "UI",
+            action: null,
+            icon: <Icon28PaintRollerOutline />
         }
     ]
 
-    return(
-        <Box>
-            <List>
-                {
-                    settings.map((obj, i) => (
-                        <>
-                            <ListItem button onClick={() => obj.action()} key={i}>
-                                {/* <ListItemAvatar>
-                                    <IconButton>
-                                        <Avatar src={obj.artwork} sx={sxStyles.iconButton}/>
-                                    </IconButton>
-                                </ListItemAvatar> */}
-                                <ListItemText primary={obj.name} secondary={obj.artist}/>
-                            </ListItem>
-                            <Divider variant="insert"/>
-                        </>
-                    ))
-                }
-            </List>
-        </Box>
+    return (
+        <Grid container spacing={3}>
+            {
+                settings.map((obj, i) => (
+                    <Grid item xs={4} key={i}>
+                        <Button size="large" onClick={obj.action} startIcon={obj.icon} fullWidth>
+                            <Typography variant="h6" sx={{paddingLeft: "20px"}}>{obj.name}</Typography>
+                        </Button>
+                        
+                    </Grid>
+                ))
+            }
+        </Grid>
     )
 }
 
