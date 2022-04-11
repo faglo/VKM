@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	"log"
 
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 
@@ -19,33 +18,21 @@ var assets embed.FS
 var icon []byte
 
 func main() {
-	// Create an instance of the app structure
 	app := NewApp()
 
-	// Create application with options
-	err := wails.Run(&options.App{
-		Title:             "vk-player-wails",
-		Width:             1024,
-		Height:            768,
-		MinWidth:          1024,
-		MinHeight:         768,
-		MaxWidth:          1280,
-		MaxHeight:         800,
-		DisableResize:     false,
-		Fullscreen:        false,
-		Frameless:         false,
-		StartHidden:       false,
-		HideWindowOnClose: false,
-		RGBA:              &options.RGBA{R: 255, G: 255, B: 255, A: 255},
-		Assets:            assets,
-		Menu:              nil,
-		Logger:            nil,
-		LogLevel:          logger.DEBUG,
-		OnStartup:         app.startup,
-		OnDomReady:        app.domReady,
-		OnBeforeClose:     app.beforeClose,
-		OnShutdown:        app.shutdown,
-		WindowStartState:  options.Normal,
+	if err := wails.Run(&options.App{
+		Title:            "VKM",
+		Width:            1024,
+		Height:           768,
+		MinWidth:         1024,
+		MinHeight:        768,
+		MaxWidth:         1280,
+		MaxHeight:        800,
+		RGBA:             &options.RGBA{R: 255, G: 255, B: 255, A: 255},
+		Assets:           assets,
+		LogLevel:         logger.DEBUG,
+		OnStartup:        app.startup,
+		WindowStartState: options.Normal,
 		Bind: []interface{}{
 			app,
 		},
@@ -70,14 +57,12 @@ func main() {
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
-				Title:   "Vanilla Template",
-				Message: "Part of the Wails projects",
+				Title:   "VKM",
+				Message: "Message", // TODO: msg
 				Icon:    icon,
 			},
 		},
-	})
-
-	if err != nil {
-		log.Fatal(err)
+	}); err != nil {
+		panic(err)
 	}
 }

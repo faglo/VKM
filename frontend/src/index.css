@@ -1,10 +1,9 @@
-@font-face{
-  font-family:"VK Sans Display";
-  src:url(../public/fonts/vk-sans.woff2)
-  format("woff2"),url(../public/fonts/vk-sans.woff)
-  format("woff");
-  font-weight:500;
-  font-display:fallback
+@font-face {
+  font-family: "VK Sans Display";
+  src: url(../public/fonts/vk-sans.woff2) format("woff2"),
+    url(../public/fonts/vk-sans.woff) format("woff");
+  font-weight: 500;
+  font-display: fallback;
 }
 
 body {
@@ -12,9 +11,11 @@ body {
   font-family: "VK Sans Display";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
