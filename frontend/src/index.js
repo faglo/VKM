@@ -12,6 +12,13 @@ import { createTheme, CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#0077ff',
+      dark: "#0077ff",
+      light: "#0077ff"
+    }
+  },
   typography: {
     fontFamily: 'VK Sans Display',
   },

@@ -21,7 +21,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development parcel --no-cache ./public/index.html && rimraf dist",
+    "start": "cross-env NODE_ENV=development parcel watch --no-cache ./public/index.html && rimraf dist",
     "build": "cross-env NODE_ENV=production parcel build ./public/index.html --public-url /"
   },
   "eslintConfig": {

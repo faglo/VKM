@@ -1,7 +1,9 @@
 import React from "react";
-import {Slider, Grid, IconButton, Typography, Box, Avatar} from "@mui/material"
+import {Slider, Grid, IconButton, Typography, Box, Avatar, LinearProgress, Stack} from "@mui/material"
 import { Icon24PlayCircle, Icon24SkipBack, Icon24SkipForward, Icon24PauseCircle, Icon24Shuffle, Icon24Repeat, Icon24RepeatOne } from '@vkontakte/icons';
 import { useSelector } from "react-redux";
+import { Icon24Volume } from '@vkontakte/icons';
+import { Icon24Mute } from '@vkontakte/icons';
 
 const sxStyles = {
     timeContainer: {
@@ -34,7 +36,8 @@ const sxStyles = {
     },
 
     positiveButton: {
-        color: "#0077ff"
+        color: "#0077ff",
+        cursor: "pointer"
     },
     
     functionButton: {
@@ -45,27 +48,73 @@ const sxStyles = {
     positiveFunctionButton: {
         paddingTop: "-10px",
         color: "#0077ff"
+    },
+    volContainer: {
+        marginTop: "1em",
+        position: "absolute", 
+        right: "1em", 
+        height: "8em"
+    },
+    loading: {
+        marginLeft: "1em",
+        marginRight: "1em",
+        width: "30em",
+        marginTop: "0.9em"
     }
 }
 
 function Player() {
     const currentSong = useSelector(state => state.currentSong)
-    const [playable, setPlayable] = React.useState(false)
+    
+    const [audioContext, setAudioContext] = React.useState(null)
+    const [audioElem, setAudioElem] = React.useState(null)
+    const [loading, setLoading] = React.useState(true)
+    
+    const [repeatMode, setRepeatMode] = React.useState(0)
+    const [shuffle, setShuffle] = React.useState(false)
     const [playState, setPlayState] = React.useState(false)
-    const [leftTimeCounter, setLeftTimeCounter] = React.useState(0)
     const [timingValue, setTimingValue] = React.useState(0)
-    const [duration, setDuration] = React.useState(5*60 + 44)
+    const [volume, setVolume] = React.useState(1)
+    const [previousVolume, setPreviousVolume] = React.useState(0)
+
+    const [duration, setDuration] = React.useState(0)
     const [songName, setSongName] = React.useState("")
     const [songArtist, setSongArtist] = React.useState("")
     const [artworkURL, setArtworkURL] = React.useState("")
-    const [shuffle, setShuffle] = React.useState(false)
-    const [repeatMode, setRepeatMode] = React.useState(0)
+    
+    
+    React.useEffect(() => {
+        const AudioCTX = new AudioContext()
+        const audio = new Audio()
+        const track = AudioCTX.createMediaElementSource(audio)
+        
+        audio.crossOrigin = "anonymous"
+        track.connect(AudioCTX.destination)
+        setAudioContext(AudioCTX)
+        setAudioElem(audio)
+    }, [])
 
     React.useEffect(() => {
-        setSongName(currentSong.name)
-        setSongArtist(currentSong.artist)
-        setArtworkURL(currentSong.artwork)
-        setPlayable(currentSong.valid)
+        if (currentSong.name && audioContext) {
+            setPlayState(false)
+
+            setSongName(currentSong.name)
+            setSongArtist(currentSong.artist)
+            setArtworkURL(currentSong.artwork)
+
+            audioElem.setAttribute("src", currentSong.url)
+            
+            audioElem.onplaying = () => setLoading(false)
+            audioElem.onwaiting = () => setLoading(true)
+            audioElem.ontimeupdate = () => {setTimingValue(Math.floor(audioElem.currentTime))}
+            audioElem.onloadeddata = () => {
+                audioElem.play()
+                setPlayState(true)
+                setLoading(false)
+                setDuration(Math.floor(audioElem.duration))
+            }
+        }
+
     }, [currentSong])
 
     const displayTime = (value) => {
@@ -73,12 +122,19 @@ function Player() {
         return Math.floor(value/60) + ":" + ((seconds < 10) ? "0"+seconds : seconds) 
     }
 
+    const onVolSet = (val) => {
+        setVolume(val)
+        audioElem.volume = val
+    }
+
     const onPlay = () => {
         setPlayState(true)
+        audioElem.play()
     }
 
     const onPause = () => {
         setPlayState(false)
+        audioElem.pause()
     }
 
     const onShuffle = () => {
@@ -95,12 +151,30 @@ function Player() {
         }
     }
 
-    if (!playable) {
+
+    if (!currentSong.name) {
         return (<PlayerNotAvailable/>)
     } else {
         return(
             <Grid container spacing={1} alignContent="center" alignItems={"center"} direction="column">
                 <Grid item>
+                    <Stack direction={"column"} sx={sxStyles.volContainer} spacing={2}>
+                        <Slider
+                            orientation="vertical" min={0} max={1} step={0.1} value={volume} size="small"
+                            onChange={(e, v) => onVolSet(v)}
+                        />
+                        {
+                            (volume === 0) ? (
+                                <Icon24Mute style={sxStyles.positiveButton} onClick={() => {onVolSet(previousVolume)}}/>
+                            ):(
+                                <Icon24Volume style={sxStyles.positiveButton} onClick={() => {
+                                    setPreviousVolume(volume)
+                                    onVolSet(0)
+                                }}/>
+                            )
+                        }
+                    </Stack>
+
                     <Box id="infoContainer" sx={sxStyles.infoContainer}>
                         <Avatar variant="rounded" src={artworkURL} sx={{height: "100%", paddingTop: "4px"}}/>
                         <Box sx={sxStyles.infoTextContainer}>
@@ -108,17 +182,17 @@ function Player() {
                             <Typography variant="subtitle2" noWrap sx={{cursor: "pointer"}}>{songArtist}</Typography>
                         </Box>
                     </Box>
-                    
                 </Grid>
+
                 <Grid item>
                     <Box id="buttonsContainer" sx={sxStyles.buttonsContainer}>
                         <IconButton size="large"><Icon24SkipBack style={sxStyles.positiveButton}/></IconButton>
     
                         {
                             (playState) ? (
-                                <IconButton size="large" onClick={onPause}><Icon24PlayCircle style={sxStyles.positiveButton}/></IconButton>
+                                <IconButton size="large" onClick={onPause}><Icon24PauseCircle style={sxStyles.positiveButton}/></IconButton>
                             ) : (
-                                <IconButton size="large" onClick={onPlay}><Icon24PauseCircle style={sxStyles.positiveButton}/></IconButton>
+                                <IconButton size="large" onClick={onPlay} disabled={loading}><Icon24PlayCircle style={sxStyles.positiveButton}/></IconButton>
                             )
                         }
     
@@ -129,37 +203,42 @@ function Player() {
                 <Grid item>
                     <Box sx={sxStyles.timeContainer} id="timeContainer">
                         {
-                            (repeatMode === 1) ? (
-                                <IconButton size="large" onClick={onRepeat} sx={sxStyles.functionButton}><Icon24Repeat style={sxStyles.positiveButton}/></IconButton>
-                            ) : (repeatMode === 2) ? (
-                                <IconButton size="large" onClick={onRepeat} sx={sxStyles.functionButton}><Icon24RepeatOne style={sxStyles.positiveButton}/></IconButton>
+                            (repeatMode === 2) ? (
+                                <IconButton size="large" onClick={onRepeat} sx={sxStyles.functionButton} disabled={loading}>
+                                    <Icon24RepeatOne style={sxStyles.positiveButton}/>
+                                </IconButton>
                             ) : (
-                                <IconButton size="large" onClick={onRepeat} sx={sxStyles.functionButton}><Icon24Repeat/></IconButton>
+                                <IconButton size="large" onClick={onRepeat} sx={sxStyles.functionButton} disabled={loading}>
+                                    <Icon24Repeat style={(repeatMode === 1) ? sxStyles.positiveButton : null}/>
+                                </IconButton>
                             )
                         }
     
-                        <Typography variant="overline">{displayTime(leftTimeCounter)}</Typography>
-    
-                        <Slider
-                            size="small"
-                            defaultValue={timingValue}
-                            min={0}
-                            max={duration}
-                            onChangeCommitted={(e, v) => setLeftTimeCounter(v)}
-                            valueLabelDisplay="auto"
-                            valueLabelFormat={displayTime}
-                            sx={sxStyles.trackSlider}
-                        />
-    
-                        <Typography variant="overline" sx={sxStyles.rightTimingValue}>{"−" + displayTime(duration - leftTimeCounter)}</Typography>
-    
+                        <Typography variant="overline">{displayTime(timingValue)}</Typography>
                         {
-                            (shuffle) ? (
-                                <IconButton size="large" onClick={onShuffle} sx={sxStyles.functionButton}><Icon24Shuffle style={sxStyles.positiveButton}/></IconButton>
+                            (loading) ? (
+                                <LinearProgress sx={sxStyles.loading} size="small"/>
                             ) : (
-                                <IconButton size="large" onClick={onShuffle} sx={sxStyles.functionButton}><Icon24Shuffle /></IconButton>
+                                <Slider
+                                    key={timingValue} size="small" min={0} max={duration}
+                                    defaultValue={timingValue}
+                                    onChange={() => audioElem.pause()}
+                                    onChangeCommitted={(e, v) => {
+                                        audioElem.play()
+                                        setTimingValue(v)
+                                        audioElem.currentTime = v
+                                    }}
+                                    valueLabelFormat={displayTime}
+                                    sx={sxStyles.trackSlider}
+                                    valueLabelDisplay="auto"
+                                />
                             )
                         }
+                        <Typography variant="overline" sx={sxStyles.rightTimingValue}>{"−" + displayTime(duration - timingValue)}</Typography>
+    
+                        <IconButton size="large" onClick={onShuffle} sx={sxStyles.functionButton} disabled={loading}>
+                            <Icon24Shuffle style={(shuffle) ? sxStyles.positiveButton : null}/>
+                        </IconButton>
                     </Box>
                 </Grid>
             </Grid>
