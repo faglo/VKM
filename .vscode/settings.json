@@ -1,5 +1,4 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.tabSize": 4,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
@@ -8,5 +7,8 @@
     "source.fixAll": true,
     "source.addMissingImports": true,
     "source.organizeImports": true
+  },
+  "[javascript][javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
