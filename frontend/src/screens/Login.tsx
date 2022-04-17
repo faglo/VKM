@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { LoadingButton } from "@mui/lab";
 import {
     Alert,
@@ -12,24 +11,24 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React from "react";
+import { useState } from "react";
 import CaptchaHandler from "../components/CaptchaHandler";
 
 function Login() {
-    const [login, setLogin] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [error, setError] = React.useState("");
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [captcha, setCaptcha] = React.useState("");
-    const [captchaValue, setCaptchaValue] = React.useState("");
-    const [twoFactorCode, setTwoFactorCode] = React.useState("");
-    const [isTwoFactor, setIsTwoFactor] = React.useState(false);
+    const [login, setLogin] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [captcha, setCaptcha] = useState("");
+    const [captchaValue, setCaptchaValue] = useState("");
+    const [twoFactorCode, setTwoFactorCode] = useState("");
+    const [isTwoFactor, setIsTwoFactor] = useState(false);
 
     return (
         <Container component={"main"} maxWidth="xs" sx={{ paddingTop: 8 }}>
-            <Grid container justify="center" spacing={3}>
+            <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Typography variant="h5" component="h1" xs={12}>
+                    <Typography variant="h5" component="h1">
                         Sign in
                     </Typography>
                 </Grid>
@@ -75,16 +74,12 @@ function Login() {
                     setCaptcha("");
                     setCaptchaValue("");
                 }}
+                onSubmit={() => {}}
             />
             <Dialog maxWidth="xs" open={isTwoFactor}>
                 <DialogTitle>Two-Factor authorization</DialogTitle>
                 <DialogContent>
-                    <Grid
-                        container
-                        justify="center"
-                        alignItems="center"
-                        spacing={3}
-                    >
+                    <Grid container alignItems="center" spacing={3}>
                         <Grid item xs={12}>
                             <TextField
                                 placeholder="Code"

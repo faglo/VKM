@@ -6,13 +6,12 @@ import {
     Grid,
     TextField,
 } from "@mui/material";
-import React from "react";
 
 const CaptchaHandler = ({ value, url, valSetter, onSubmit, onCancel }) => (
     <Dialog maxWidth="xs" open={url.length > 0}>
         <DialogTitle>Captcha required</DialogTitle>
         <DialogContent>
-            <Grid container justify="center" alignItems="center" spacing={3}>
+            <Grid container alignItems="center" spacing={3}>
                 <Grid item xs={12}>
                     <img src={url} alt="captcha" width={"100%"} />
                 </Grid>

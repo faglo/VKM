@@ -16,8 +16,8 @@ import {
     Icon24SkipBack,
     Icon24SkipForward,
 } from "@vkontakte/icons";
-import React from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../store/hooks";
 
 const sxStyles = {
     row: {
@@ -53,21 +53,20 @@ const sxStyles = {
 };
 
 function Player() {
-    // @ts-ignore
-    const currentSong = useSelector((state) => state.currentSong);
-    const [loading, setLoading] = React.useState(false);
+    const currentSong = useAppSelector((state) => state.currentSong);
+    const [loading, setLoading] = useState(false);
 
-    const [repeatMode, setRepeatMode] = React.useState(0);
-    const [shuffle, setShuffle] = React.useState(false);
-    const [playState, setPlayState] = React.useState(false);
-    const [currentTime, setCurrentTime] = React.useState(0);
+    const [repeatMode, setRepeatMode] = useState(0);
+    const [shuffle, setShuffle] = useState(false);
+    const [playState, setPlayState] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
 
-    const [duration, setDuration] = React.useState(0);
-    const [songName, setSongName] = React.useState("");
-    const [songArtist, setSongArtist] = React.useState("");
-    const [artworkURL, setArtworkURL] = React.useState("");
+    const [duration, setDuration] = useState(0);
+    const [songName, setSongName] = useState("");
+    const [songArtist, setSongArtist] = useState("");
+    const [artworkURL, setArtworkURL] = useState("");
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (currentSong.name) {
             setPlayState(false);
 
@@ -117,7 +116,6 @@ function Player() {
                     onClick={onRepeat}
                     sx={{
                         marginRight: margin,
-                        // @ts-ignore
                         ...sxStyles.functionButtonTopMargin,
                     }}
                     disableRipple

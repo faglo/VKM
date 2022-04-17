@@ -1,5 +1,5 @@
 import { Box, Divider, Tab, Tabs } from "@mui/material";
-import React from "react";
+import { useEffect, useState } from "react";
 import CaptchaHandler from "./components/CaptchaHandler";
 import Player from "./components/Player";
 import Login from "./screens/Login";
@@ -39,12 +39,12 @@ function App() {
         },
     ];
 
-    const [currentScreen, setCurrentScreen] = React.useState(0);
-    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-    const [captcha, setCaptcha] = React.useState("");
-    const [captchaValue, setCaptchaValue] = React.useState("");
+    const [currentScreen, setCurrentScreen] = useState(0);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [captcha, setCaptcha] = useState("");
+    const [captchaValue, setCaptchaValue] = useState("");
 
-    React.useEffect(() => {}, []);
+    useEffect(() => {}, []);
     if (isLoggedIn) {
         return (
             <Box>
@@ -70,6 +70,7 @@ function App() {
                         setCaptcha("");
                         setCaptchaValue("");
                     }}
+                    onSubmit={() => {}}
                 />
             </Box>
         );
