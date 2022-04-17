@@ -5,6 +5,7 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 
+	"github.com/faglo/vkm/internal/app"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -18,7 +19,7 @@ var assets embed.FS
 var icon []byte
 
 func main() {
-	app := NewApp()
+	application := app.New()
 
 	if err := wails.Run(&options.App{
 		Title:            "VKM",
@@ -31,10 +32,10 @@ func main() {
 		RGBA:             &options.RGBA{R: 255, G: 255, B: 255, A: 255},
 		Assets:           assets,
 		LogLevel:         logger.DEBUG,
-		OnStartup:        app.startup,
+		OnStartup:        application.Startup,
 		WindowStartState: options.Normal,
 		Bind: []interface{}{
-			app,
+			application,
 		},
 		// Windows platform specific options
 		Windows: &windows.Options{
