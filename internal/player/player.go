@@ -32,7 +32,6 @@ func (p *Player) Play(audio string) error {
 	if err != nil {
 		return err
 	}
-	defer streamer.Close()
 
 	// Set audio streamer
 	p.ctrl.Streamer = streamer

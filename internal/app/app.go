@@ -31,7 +31,7 @@ func (a *Application) Startup(ctx context.Context) {
 
 		audios, err := vkapi.NewClient(
 			"a42780eec8417e41a8aaa6178237768934b271c32b8d52a54f74ffdc3db726f043b0eee4fd63ac8d49450").
-			AudioByID("-2001026462_108026462_")
+			AudioByID("-2001026462_108026462")
 		if err != nil {
 			fmt.Println(err)
 			return
