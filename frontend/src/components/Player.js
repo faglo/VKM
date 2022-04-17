@@ -53,8 +53,9 @@ const sxStyles = {
 };
 
 function Player() {
+    // @ts-ignore
     const currentSong = useSelector((state) => state.currentSong);
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = React.useState(false);
 
     const [repeatMode, setRepeatMode] = React.useState(0);
     const [shuffle, setShuffle] = React.useState(false);

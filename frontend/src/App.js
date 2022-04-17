@@ -1,6 +1,7 @@
 import { Box, Divider, Tab, Tabs } from "@mui/material";
 import React from "react";
-import Player from "./Player";
+import CaptchaHandler from "./components/CaptchaHandler";
+import Player from "./components/Player";
 import Login from "./screens/Login";
 import MyMusic from "./screens/MyMusic";
 import Search from "./screens/Search";
@@ -22,21 +23,26 @@ const sxStyles = {
 function App() {
     const screens = [
         {
+            id: 0,
             name: "My music",
             screen: <MyMusic />,
         },
         {
+            id: 1,
             name: "Search",
             screen: <Search />,
         },
         {
+            id: 2,
             name: "Settings",
             screen: <Settings />,
         },
     ];
 
     const [currentScreen, setCurrentScreen] = React.useState(0);
-    const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+    const [captcha, setCaptcha] = React.useState("");
+    const [captchaValue, setCaptchaValue] = React.useState("");
 
     React.useEffect(() => {}, []);
     if (isLoggedIn) {
@@ -56,6 +62,15 @@ function App() {
                     <Divider />
                     <Player />
                 </Box>
+                <CaptchaHandler
+                    value={captchaValue}
+                    valSetter={setCaptchaValue}
+                    url={captcha}
+                    onCancel={() => {
+                        setCaptcha("");
+                        setCaptchaValue("");
+                    }}
+                />
             </Box>
         );
     } else {

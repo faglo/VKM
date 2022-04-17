@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { LoadingButton } from "@mui/lab";
 import {
     Alert,
@@ -12,40 +13,21 @@ import {
     Typography,
 } from "@mui/material";
 import React from "react";
+import CaptchaHandler from "../components/CaptchaHandler";
 
 function Login() {
     const [login, setLogin] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
-    const [captcha, setCaptcha] = React.useState(null);
+    const [captcha, setCaptcha] = React.useState("");
     const [captchaValue, setCaptchaValue] = React.useState("");
     const [twoFactorCode, setTwoFactorCode] = React.useState("");
     const [isTwoFactor, setIsTwoFactor] = React.useState(false);
 
-    const onLogin = () => {
-        console.log(login, password);
-    };
-
-    const onCaptchaSubmit = () => {
-        console.log(captchaValue);
-    };
-
-    const onTwoFactorSubmit = () => {
-        console.log(twoFactorCode);
-    };
-
-    const onCaptha = (captchaObj) => {
-        setCaptcha(captchaObj);
-    };
-
-    const onTwoFactor = () => {
-        setIsTwoFactor(true);
-    };
-
     return (
         <Container component={"main"} maxWidth="xs" sx={{ paddingTop: 8 }}>
-            <Grid container justify="center" alignItems="center" spacing={3}>
+            <Grid container justify="center" spacing={3}>
                 <Grid item xs={12}>
                     <Typography variant="h5" component="h1" xs={12}>
                         Sign in
@@ -71,11 +53,7 @@ function Login() {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <LoadingButton
-                        loading={isLoading}
-                        fullWidth
-                        onClick={onLogin}
-                    >
+                    <LoadingButton loading={isLoading} fullWidth>
                         Sign in
                     </LoadingButton>
                 </Grid>
@@ -83,61 +61,21 @@ function Login() {
 
             <Snackbar
                 open={error.length > 0}
-                autoHideDuration={5000}
+                message={error}
                 onClose={() => setError("")}
+                autoHideDuration={3000}
             >
                 <Alert severity="error">{error}</Alert>
             </Snackbar>
-
-            <Dialog maxWidth="xs" open={captcha === null}>
-                <DialogTitle>Captcha required</DialogTitle>
-                <DialogContent>
-                    <Grid
-                        container
-                        justify="center"
-                        alignItems="center"
-                        spacing={3}
-                    >
-                        <Grid item xs={12}>
-                            <img src={captcha} alt="captcha" width={"100%"} />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                placeholder="Captcha"
-                                variant="outlined"
-                                fullWidth
-                                value={captchaValue}
-                                onChange={(e) =>
-                                    setCaptchaValue(e.target.value)
-                                }
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button
-                                variant="contained"
-                                fullWidth
-                                disabled={captchaValue.length === 0}
-                                onClick={onCaptchaSubmit}
-                            >
-                                Submit
-                            </Button>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button
-                                variant="contained"
-                                fullWidth
-                                onClick={() => {
-                                    setCaptcha("");
-                                    setIsLoading(false);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </DialogContent>
-            </Dialog>
-
+            <CaptchaHandler
+                value={captchaValue}
+                url={captcha}
+                valSetter={setCaptchaValue}
+                onCancel={() => {
+                    setCaptcha("");
+                    setCaptchaValue("");
+                }}
+            />
             <Dialog maxWidth="xs" open={isTwoFactor}>
                 <DialogTitle>Two-Factor authorization</DialogTitle>
                 <DialogContent>
@@ -163,7 +101,6 @@ function Login() {
                                 variant="contained"
                                 fullWidth
                                 disabled={twoFactorCode.length === 0}
-                                onClick={onTwoFactorSubmit}
                             >
                                 Submit
                             </Button>
