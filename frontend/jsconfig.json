@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "checkJs": true,
+        "importHelpers": true,
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react-jsx"
+    }
+}
