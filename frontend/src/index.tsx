@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, CssBaseline } from "@mui/material";
+import { AppRoot } from "@vkontakte/vkui";
 import { StrictMode } from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
@@ -41,7 +42,9 @@ render(
         <StrictMode>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <App />
+                <AppRoot mode="embedded">
+                    <App />
+                </AppRoot>
             </ThemeProvider>
         </StrictMode>
     </Provider>,
