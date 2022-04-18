@@ -10,7 +10,7 @@ type Client struct {
 	Token string
 }
 
-// NewClient creates a new Client with the given token
-func NewClient(token string) *Client {
+// New creates a new Client with the given token
+func New(token string) *Client {
 	return &Client{token}
 }

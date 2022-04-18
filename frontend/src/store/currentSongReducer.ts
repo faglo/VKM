@@ -1,17 +1,15 @@
 import { AnyAction } from "redux";
 
 interface CurrentSongState {
-    valid: boolean;
-    name?: string;
     artist?: string;
-    artwork?: string;
+    title?: string;
+    cover?: string;
 }
 
 const defaultState: CurrentSongState = {
-    valid: false,
-    name: null,
     artist: null,
-    artwork: null,
+    title: null,
+    cover: null,
 };
 
 export const UPDATE_SONG = "UPDATE_SONG";

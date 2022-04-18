@@ -54,11 +54,11 @@ const sxStyles = {
 
 function Player() {
     const currentSong = useAppSelector((state) => state.currentSong);
+    const playState = useAppSelector((state) => !state.player.paused);
     const [loading, setLoading] = useState(false);
 
     const [repeatMode, setRepeatMode] = useState(0);
     const [shuffle, setShuffle] = useState(false);
-    const [playState, setPlayState] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
 
     const [duration, setDuration] = useState(0);
@@ -67,12 +67,10 @@ function Player() {
     const [artworkURL, setArtworkURL] = useState("");
 
     useEffect(() => {
-        if (currentSong.name) {
-            setPlayState(false);
-
-            setSongName(currentSong.name);
+        if (currentSong.title) {
+            setSongName(currentSong.title);
             setSongArtist(currentSong.artist);
-            setArtworkURL(currentSong.artwork);
+            setArtworkURL(currentSong.cover);
             setLoading(false);
         }
     }, [currentSong]);
@@ -86,12 +84,8 @@ function Player() {
         );
     };
 
-    const onPlay = () => {
-        setPlayState(true);
-    };
-
     const onPause = () => {
-        setPlayState(false);
+        window.go.app.Application.Pause();
     };
 
     const onShuffle = () => {
@@ -171,7 +165,7 @@ function Player() {
             return (
                 <IconButton
                     size="large"
-                    onClick={onPlay}
+                    onClick={onPause}
                     disabled={loading}
                     disableRipple
                 >
@@ -181,7 +175,7 @@ function Player() {
         }
     };
 
-    if (!currentSong.name) {
+    if (!currentSong.title) {
         return <PlayerNotAvailable />;
     } else {
         return (

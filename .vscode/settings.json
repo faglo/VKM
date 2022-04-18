@@ -8,7 +8,7 @@
     "source.addMissingImports": true,
     "source.organizeImports": true
   },
-  "[javascript][javascriptreact]": {
+  "[javascript][javascriptreact][typescript][typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

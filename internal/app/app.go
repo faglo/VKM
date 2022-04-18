@@ -2,47 +2,27 @@ package app
 
 import (
 	"context"
-	"time"
 
-	"github.com/faglo/vkm/internal/player"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/faglo/vkm/internal/vkapi"
+	"github.com/faiface/beep"
 )
 
 // Application struct
 type Application struct {
-	ctx    context.Context
-	player *player.Player
+	ctx  context.Context
+	api  *vkapi.Client
+	ctrl *beep.Ctrl
 }
 
 // New creates a new Application
 func New() *Application {
-	return &Application{}
+	return &Application{
+		api:  vkapi.New("a42780eec8417e41a8aaa6178237768934b271c32b8d52a54f74ffdc3db726f043b0eee4fd63ac8d49450"),
+		ctrl: &beep.Ctrl{},
+	}
 }
 
 func (a *Application) Startup(ctx context.Context) {
 	a.ctx = ctx
-	a.player = player.New()
-
-	go a.playerEvents()
-	// go func() {
-	// 	time.Sleep(time.Second * 5)
-
-	// 	audios, err := vkapi.NewClient(
-	// 		"a42780eec8417e41a8aaa6178237768934b271c32b8d52a54f74ffdc3db726f043b0eee4fd63ac8d49450").
-	// 		AudioByID("-2001026462_108026462")
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		return
-	// 	}
-
-	// 	a.player.Play(audios[0].URL)
-	// }()
-}
-
-func (a *Application) playerEvents() {
-	for {
-		pos := a.player.Position()
-		runtime.EventsEmit(a.ctx, "player_position", pos)
-		time.Sleep(time.Millisecond * 500)
-	}
+	go a.playerUpdater()
 }

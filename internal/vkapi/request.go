@@ -16,6 +16,11 @@ type response[T any] struct {
 	Response *T        `json:"response"`
 }
 
+type listResponse[T any] struct {
+	Count int  `json:"count"`
+	Items []*T `json:"items"`
+}
+
 type apiError struct {
 	Code    int    `json:"error_code"`
 	Message string `json:"error_msg"`

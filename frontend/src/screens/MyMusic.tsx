@@ -9,9 +9,8 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { updateSongAction } from "../store/currentSongReducer";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { Audio } from "../wailsjs/go/models";
 
 const sxStyles = {
     mainList: {
@@ -20,37 +19,24 @@ const sxStyles = {
 };
 
 function MyMusic() {
-    const music = [
-        {
-            valid: true,
-            name: "Sample music",
-            artist: "Unknown",
-            artwork: "https://i.ytimg.com/vi/J1gnPiQ5N_M/maxresdefault.jpg",
-            url: "https://ia800905.us.archive.org/19/items/FREE_background_music_dhalius/backsound.mp3",
-        },
-        {
-            valid: true,
-            name: "Example",
-            artist: "SoundHelix",
-            artwork: "https://res.cloudinary.com/demo/image/upload/sample.gif",
-            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3",
-        },
-    ];
+    const [songs, setSongs] = useState<Audio[]>([]);
 
     const [loading, setLoading] = useState(false);
-    const dispatch = useDispatch();
-    const currentSong = useAppSelector((state) => state.currentSong);
+    const dispatch = useAppDispatch();
+    const player = useAppSelector((state) => state.player);
 
     useEffect(() => {
         setLoading(true);
-        setTimeout(() => {
+        window.go.app.Application.Search("100 gecs").then((songs: Audio[]) => {
+            setSongs(songs);
             setLoading(false);
-        }, 1000);
+        });
     }, []);
 
-    const play = (song) => {
-        dispatch(updateSongAction(song));
-        console.log(currentSong);
+    const play = (id: string) => {
+        window.go.app.Application.Play(id).then((song) => {
+            console.log(song);
+        });
     };
 
     return (
@@ -59,10 +45,12 @@ function MyMusic() {
                 {loading ? (
                     <Skeletons />
                 ) : (
-                    music.map((obj, index) => (
-                        <MusicEntity
-                            musicData={obj}
-                            action={play}
+                    songs.map((obj, index) => (
+                        <SongEntity
+                            artist={obj.artist}
+                            title={obj.title}
+                            cover={obj.album?.thumb?.photo_68}
+                            onClick={() => play(`${obj.owner_id}_${obj.id}`)}
                             key={index}
                         />
                     ))
@@ -72,16 +60,18 @@ function MyMusic() {
     );
 }
 
-const MusicEntity = ({ musicData, action, key }) => (
+const SongEntity = (props: {
+    title: string;
+    artist: string;
+    cover: string;
+    onClick: () => void;
+}) => (
     <>
-        <ListItem button onClick={() => action(musicData)} key={key}>
+        <ListItem button onClick={props.onClick}>
             <ListItemAvatar>
-                <Avatar src={musicData.artwork} />
+                <Avatar src={props.cover} />
             </ListItemAvatar>
-            <ListItemText
-                primary={musicData.name}
-                secondary={musicData.artist}
-            />
+            <ListItemText primary={props.title} secondary={props.artist} />
         </ListItem>
         <Divider />
     </>

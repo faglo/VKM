@@ -1,5 +1,18 @@
-import { Box, Divider, Drawer, Grid, IconButton, InputAdornment, List, ListItem, ListItemIcon, ListItemText, OutlinedInput, Typography } from "@mui/material";
-import { Icon16Search, Icon28Music, Icon28Settings } from '@vkontakte/icons';
+import {
+    Box,
+    Divider,
+    Drawer,
+    Grid,
+    IconButton,
+    InputAdornment,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    OutlinedInput,
+    Typography,
+} from "@mui/material";
+import { Icon16Search, Icon28Music, Icon28Settings } from "@vkontakte/icons";
 import { useEffect, useState } from "react";
 import CaptchaHandler from "./components/CaptchaHandler";
 import Player from "./components/Player";
@@ -23,26 +36,26 @@ const sxStyles = {
     },
     positive: {
         color: "#0077ff",
-    }
+    },
 };
 
 function App() {
     const screens = [
         {
-            id: 0,
+            id: "music",
             name: "My music",
             icon: <Icon28Music style={sxStyles.positive} />,
             screen: <MyMusic />,
         },
         {
-            id: 1,
+            id: "settings",
             name: "Settings",
             icon: <Icon28Settings style={sxStyles.positive} />,
             screen: <Settings />,
         },
     ];
 
-    const [currentScreen, setCurrentScreen] = useState(0);
+    const [currentScreen, setCurrentScreen] = useState("music");
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [captcha, setCaptcha] = useState("");
     const [captchaValue, setCaptchaValue] = useState("");
@@ -50,19 +63,37 @@ function App() {
     useEffect(() => {}, []);
     if (isLoggedIn) {
         return (
-            <Box sx={{display: "flex"}}>
-                <Drawer sx={sxStyles.drawer} variant={"permanent"} anchor={"left"}>
-                    <Grid container sx={sxStyles.drawer} spacing={1} justifyContent={"center"}>
+            <Box sx={{ display: "flex" }}>
+                <Drawer
+                    sx={sxStyles.drawer}
+                    variant={"permanent"}
+                    anchor={"left"}
+                >
+                    <Grid
+                        container
+                        sx={sxStyles.drawer}
+                        spacing={1}
+                        justifyContent={"center"}
+                    >
                         <Grid item xs={11}>
-                            <Box sx={{ display: "flex", alignItems: "center", flexDirection:"column" }}>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    flexDirection: "column",
+                                }}
+                            >
                                 <Typography variant="h5">VKM</Typography>
                                 <OutlinedInput
                                     size="small"
-                                    fullWidth sx={{ margin: 1}}
+                                    fullWidth
+                                    sx={{ margin: 1 }}
                                     endAdornment={
                                         <InputAdornment position="end">
                                             <IconButton>
-                                                <Icon16Search style={sxStyles.positive} />
+                                                <Icon16Search
+                                                    style={sxStyles.positive}
+                                                />
                                             </IconButton>
                                         </InputAdornment>
                                     }
@@ -70,31 +101,38 @@ function App() {
                             </Box>
                             <Divider />
                         </Grid>
-                        <Grid item xs={12}>  
+                        <Grid item xs={12}>
                             <List>
-                                {
-                                    screens.map((screen) => (
-                                        <ListItem
-                                            key={screen.id}
-                                            onClick={() => setCurrentScreen(screen.id)}
-                                            button
-                                            selected={screen.id === currentScreen}
-                                        >
-                                            <ListItemIcon>
-                                                {screen.icon}
-                                            </ListItemIcon>
-                                            <ListItemText primary={screen.name} />
-                                        </ListItem>
-                                    ))
-                                }
+                                {screens.map((screen) => (
+                                    <ListItem
+                                        key={screen.id}
+                                        onClick={() =>
+                                            setCurrentScreen(screen.id)
+                                        }
+                                        button
+                                        selected={screen.id === currentScreen}
+                                    >
+                                        <ListItemIcon>
+                                            {screen.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={screen.name} />
+                                    </ListItem>
+                                ))}
                             </List>
                         </Grid>
                     </Grid>
                 </Drawer>
-                <Box component={"main"} sx={{flexGrow: 1, paddingLeft: `calc(100% - ${sxStyles.drawer.width})`}}>
-                    {screens[currentScreen].screen}
+                <Box
+                    component={"main"}
+                    sx={{
+                        flexGrow: 1,
+                        paddingLeft: `calc(100% - ${sxStyles.drawer.width})`,
+                    }}
+                >
+                    {screens.filter((id) => id.id === currentScreen)[0].screen}
                 </Box>
                 <Box sx={sxStyles.player}>
+                    <Divider />
                     <Player />
                 </Box>
                 <CaptchaHandler
