@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -50,6 +51,14 @@ func (a *Application) Pause() {
 type playerState struct {
 	Paused   bool `json:"paused"`
 	Position int  `json:"position"`
+}
+
+func (a *Application) UpdatePosition(pos int) {
+	err := a.ctrl.Streamer.(beep.StreamSeekCloser).Seek(pos)
+	if err != nil {
+		fmt.Println(err)
+	}
+	a.updatePlayer()
 }
 
 func (a *Application) updatePlayer() {

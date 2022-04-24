@@ -26,9 +26,11 @@ func (a *Application) Play(id string) (*vkapi.Audio, error) {
 	}
 
 	runtime.EventsEmit(a.ctx, "update-song", map[string]any{
-		"artist": audio[0].Artist,
-		"title":  audio[0].Title,
-		"cover":  audio[0].Album.Thumb.Photo135,
+		"artist":   audio[0].Artist,
+		"title":    audio[0].Title,
+		"cover":    audio[0].Album.Thumb.Photo135,
+		"duration": audio[0].Duration,
+		"id":       audio[0].ID,
 	})
 
 	return audio[0], nil

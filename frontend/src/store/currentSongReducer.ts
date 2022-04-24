@@ -4,6 +4,8 @@ interface CurrentSongState {
     artist?: string;
     title?: string;
     cover?: string;
+    duration?: number;
+    id?: number;
 }
 
 const defaultState: CurrentSongState = {

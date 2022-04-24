@@ -4,21 +4,31 @@ import {
     Drawer,
     Grid,
     IconButton,
+    Input,
     InputAdornment,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    OutlinedInput,
     Typography,
 } from "@mui/material";
-import { Icon16Search, Icon28Music, Icon28Settings } from "@vkontakte/icons";
-import { useEffect, useState } from "react";
+import {
+    Icon16Search,
+    Icon28Music,
+    Icon28Search,
+    Icon28Settings,
+} from "@vkontakte/icons";
+import { useState } from "react";
 import CaptchaHandler from "./components/CaptchaHandler";
 import Player from "./components/Player";
 import Login from "./screens/Login";
 import MyMusic from "./screens/MyMusic";
+import Search from "./screens/Search";
 import Settings from "./screens/Settings";
+import { updateScreenAction } from "./store/currentScreenReducer";
+import { useAppSelector } from "./store/hooks";
+import { searchAction } from "./store/searchReducer";
+import { store } from "./store/store";
 
 const sxStyles = {
     player: {
@@ -26,7 +36,7 @@ const sxStyles = {
         bottom: 0,
         backgroundColor: "white",
         width: "100%",
-        height: "4em",
+        height: "8vh",
         paddingBottom: 0,
         marginBottom: 0,
         zIndex: 9999,
@@ -37,12 +47,17 @@ const sxStyles = {
     positive: {
         color: "#0077ff",
     },
+    screen: {
+        maxHeight: "calc(100vh - 8vh)",
+        flexGrow: 1,
+    },
 };
 
 function App() {
+    const currentScreen = useAppSelector((state) => state.currentScreen).screen;
     const screens = [
         {
-            id: "music",
+            id: "main",
             name: "My music",
             icon: <Icon28Music style={sxStyles.positive} />,
             screen: <MyMusic />,
@@ -53,14 +68,25 @@ function App() {
             icon: <Icon28Settings style={sxStyles.positive} />,
             screen: <Settings />,
         },
+        {
+            id: "search",
+            name: "Search",
+            icon: <Icon28Search style={sxStyles.positive} />,
+            screen: <Search />,
+        },
     ];
 
-    const [currentScreen, setCurrentScreen] = useState("music");
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [captcha, setCaptcha] = useState("");
     const [captchaValue, setCaptchaValue] = useState("");
+    const [searchVal, setSearchVal] = useState("");
 
-    useEffect(() => {}, []);
+    const onSearch = () => {
+        store.dispatch(searchAction(searchVal));
+        store.dispatch(updateScreenAction("search"));
+        setSearchVal("");
+    };
+
     if (isLoggedIn) {
         return (
             <Box sx={{ display: "flex" }}>
@@ -84,22 +110,24 @@ function App() {
                                 }}
                             >
                                 <Typography variant="h5">VKM</Typography>
-                                <OutlinedInput
+                                <Input
                                     size="small"
                                     fullWidth
                                     sx={{ margin: 1 }}
                                     endAdornment={
                                         <InputAdornment position="end">
-                                            <IconButton>
+                                            <IconButton onClick={onSearch}>
                                                 <Icon16Search
                                                     style={sxStyles.positive}
                                                 />
                                             </IconButton>
                                         </InputAdornment>
                                     }
+                                    onChange={(e) =>
+                                        setSearchVal(e.target.value)
+                                    }
                                 />
                             </Box>
-                            <Divider />
                         </Grid>
                         <Grid item xs={12}>
                             <List>
@@ -107,7 +135,9 @@ function App() {
                                     <ListItem
                                         key={screen.id}
                                         onClick={() =>
-                                            setCurrentScreen(screen.id)
+                                            store.dispatch(
+                                                updateScreenAction(screen.id)
+                                            )
                                         }
                                         button
                                         selected={screen.id === currentScreen}
@@ -122,15 +152,9 @@ function App() {
                         </Grid>
                     </Grid>
                 </Drawer>
-                <Box
-                    component={"main"}
-                    sx={{
-                        flexGrow: 1,
-                        paddingLeft: `calc(100% - ${sxStyles.drawer.width})`,
-                    }}
-                >
+                <div style={sxStyles.screen}>
                     {screens.filter((id) => id.id === currentScreen)[0].screen}
-                </Box>
+                </div>
                 <Box sx={sxStyles.player}>
                     <Divider />
                     <Player />

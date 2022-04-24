@@ -3,11 +3,11 @@ import {
     Box,
     Grid,
     IconButton,
-    LinearProgress,
     Slider,
     Typography,
 } from "@mui/material";
 import {
+    Icon20VolumeOutline,
     Icon24PauseCircle,
     Icon24PlayCircle,
     Icon24Repeat,
@@ -27,7 +27,7 @@ const sxStyles = {
     trackSlider: {
         marginLeft: "1em",
         marginRight: "1em",
-        width: "30em",
+        width: "30vw",
         marginTop: "2px",
         color: "#0077ff",
     },
@@ -44,34 +44,45 @@ const sxStyles = {
     loading: {
         marginLeft: "1em",
         marginRight: "1em",
-        width: "30em",
+        width: "40vw",
         marginTop: "0.9em",
     },
     functionButtonTopMargin: {
         marginTop: "-3px",
+    },
+    volume: {
+        width: "5vw",
+        paddingTop: "19px",
+        marginLeft: "3px",
+    },
+    volumeContainer: {
+        display: "flex",
+        flexDirection: "row",
+        paddingTop: "3px",
     },
 };
 
 function Player() {
     const currentSong = useAppSelector((state) => state.currentSong);
     const playState = useAppSelector((state) => !state.player.paused);
-    const [loading, setLoading] = useState(false);
+    const currentTime = useAppSelector((state) => state.player.position);
 
     const [repeatMode, setRepeatMode] = useState(0);
     const [shuffle, setShuffle] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
+    const [volume, setVolume] = useState(0.5);
 
     const [duration, setDuration] = useState(0);
     const [songName, setSongName] = useState("");
     const [songArtist, setSongArtist] = useState("");
     const [artworkURL, setArtworkURL] = useState("");
+    const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
         if (currentSong.title) {
             setSongName(currentSong.title);
             setSongArtist(currentSong.artist);
             setArtworkURL(currentSong.cover);
-            setLoading(false);
+            setDuration(currentSong.duration);
         }
     }, [currentSong]);
 
@@ -163,92 +174,104 @@ function Player() {
             );
         } else {
             return (
-                <IconButton
-                    size="large"
-                    onClick={onPause}
-                    disabled={loading}
-                    disableRipple
-                >
+                <IconButton size="large" onClick={onPause} disableRipple>
                     <Icon24PlayCircle style={sxStyles.positiveButton} />
                 </IconButton>
             );
         }
     };
 
+    const PositionChange = (e, val) => {
+        window.go.app.Application.UpdatePosition(val);
+    };
+
     if (!currentSong.title) {
         return <PlayerNotAvailable />;
     } else {
         return (
-            <Grid
-                container
-                spacing={2}
-                alignContent="center"
-                alignItems={"center"}
-                direction="row"
-            >
-                <Grid item>
-                    <Avatar
-                        variant="rounded"
-                        src={artworkURL}
-                        sx={{ marginLeft: "1em" }}
-                    />
-                </Grid>
-                <Grid item>
-                    <Box sx={{ width: "7em" }}>
-                        <Typography variant="subtitle1" noWrap>
-                            {songName}
-                        </Typography>
-                        <Typography variant="subtitle2" noWrap>
-                            {songArtist}
-                        </Typography>
-                    </Box>
-                </Grid>
+            <Box>
+                <Grid
+                    container
+                    spacing={2}
+                    alignContent="center"
+                    alignItems={"center"}
+                    direction="row"
+                >
+                    <Grid item>
+                        <Avatar
+                            variant="rounded"
+                            src={artworkURL}
+                            sx={{ marginLeft: "1em" }}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Box sx={{ width: "7em" }}>
+                            <Typography variant="subtitle1" noWrap>
+                                {songName}
+                            </Typography>
 
-                <Grid item>
-                    <Box sx={{ marginTop: "0.3em" }}>
-                        <IconButton size="large">
-                            <Icon24SkipBack style={sxStyles.positiveButton} />
-                        </IconButton>
+                            <Typography variant="subtitle2" noWrap>
+                                {songArtist}
+                            </Typography>
+                        </Box>
+                    </Grid>
 
-                        <PlayButton />
+                    <Grid item>
+                        <Box sx={{ marginTop: "0.3em" }}>
+                            <IconButton size="large">
+                                <Icon24SkipBack
+                                    style={sxStyles.positiveButton}
+                                />
+                            </IconButton>
 
-                        <IconButton size="large">
-                            <Icon24SkipForward
-                                style={sxStyles.positiveButton}
-                            />
-                        </IconButton>
-                    </Box>
-                </Grid>
+                            <PlayButton />
 
-                <Grid item>
-                    <Box sx={{ ...sxStyles.row, marginTop: "0.5em" }}>
-                        <RepeatButton />
+                            <IconButton size="large">
+                                <Icon24SkipForward
+                                    style={sxStyles.positiveButton}
+                                />
+                            </IconButton>
+                        </Box>
+                    </Grid>
 
-                        <Typography variant="overline">
-                            {displayTime(currentTime)}
-                        </Typography>
-                        {loading ? (
-                            <LinearProgress sx={sxStyles.trackSlider} />
-                        ) : (
+                    <Grid item>
+                        <Box sx={{ ...sxStyles.row, marginTop: "0.5em" }}>
+                            <RepeatButton />
+
+                            <Typography variant="overline">
+                                {displayTime(currentTime)}
+                            </Typography>
                             <Slider
                                 key={currentTime}
-                                size="medium"
-                                min={0}
+                                size="small"
                                 max={duration}
                                 defaultValue={currentTime}
                                 valueLabelFormat={displayTime}
                                 valueLabelDisplay="auto"
                                 sx={sxStyles.trackSlider}
+                                onChangeCommitted={PositionChange}
                             />
-                        )}
-                        <Typography variant="overline">
-                            {"−" + displayTime(duration - currentTime)}
-                        </Typography>
+                            <Typography variant="overline">
+                                {"−" + displayTime(duration - currentTime)}
+                            </Typography>
 
-                        <ShuffleButton />
-                    </Box>
+                            <ShuffleButton />
+                        </Box>
+                    </Grid>
+
+                    <Grid item>
+                        <Box sx={sxStyles.volumeContainer}>
+                            <IconButton disableRipple disabled>
+                                <Icon20VolumeOutline
+                                    style={sxStyles.positiveButton}
+                                />
+                            </IconButton>
+
+                            <Slider sx={sxStyles.volume} size={"small"} />
+                        </Box>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Box>
         );
     }
 }
