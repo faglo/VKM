@@ -12,12 +12,6 @@ function MyMusic() {
         window.go.app.Application.Search("100 gecs").then((songs: Audio[]) => {
             setSongs(songs);
             setLoading(false);
-            window.go.app.Application.Play(
-                `${songs[0].owner_id}_${songs[0].id}`
-            );
-            setTimeout(() => {
-                window.go.app.Application.Pause();
-            }, 500);
         });
     }, []);
 

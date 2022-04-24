@@ -75,7 +75,6 @@ function Player() {
     const [songName, setSongName] = useState("");
     const [songArtist, setSongArtist] = useState("");
     const [artworkURL, setArtworkURL] = useState("");
-    const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
         if (currentSong.title) {
@@ -111,6 +110,14 @@ function Player() {
         } else {
             setRepeatMode(0);
         }
+    };
+
+    const positionChange = (e, val) => {
+        window.go.app.Application.UpdatePosition(val);
+    };
+
+    const volumeChange = (e, val) => {
+        setVolume(val);
     };
 
     const RepeatButton = () => {
@@ -181,10 +188,6 @@ function Player() {
         }
     };
 
-    const PositionChange = (e, val) => {
-        window.go.app.Application.UpdatePosition(val);
-    };
-
     if (!currentSong.title) {
         return <PlayerNotAvailable />;
     } else {
@@ -249,7 +252,7 @@ function Player() {
                                 valueLabelFormat={displayTime}
                                 valueLabelDisplay="auto"
                                 sx={sxStyles.trackSlider}
-                                onChangeCommitted={PositionChange}
+                                onChangeCommitted={positionChange}
                             />
                             <Typography variant="overline">
                                 {"−" + displayTime(duration - currentTime)}
@@ -267,7 +270,14 @@ function Player() {
                                 />
                             </IconButton>
 
-                            <Slider sx={sxStyles.volume} size={"small"} />
+                            <Slider
+                                sx={sxStyles.volume}
+                                size={"small"}
+                                onChange={volumeChange}
+                                value={volume}
+                                max={1}
+                                step={0.1}
+                            />
                         </Box>
                     </Grid>
                 </Grid>
